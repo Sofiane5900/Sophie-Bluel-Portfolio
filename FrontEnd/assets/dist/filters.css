@@ -1,0 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Shrikhand&family=Syne:wght@700&display=swap");
+.category {
+  display: flex;
+  flex-direction: row;
+  padding: 2% 0% 5% 30%;
+}
+.category .category-item {
+  font-family: "Syne", sans-serif;
+  font-size: 16px;
+  color: #1D6154;
+  list-style-type: none;
+  margin: 0 5px;
+  border: 2px solid #1D6154;
+  border-radius: 15px;
+}
+.category .category-item p {
+  font-family: "Syne", sans-serif;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  margin: 8px;
+}
+
+/*# sourceMappingURL=filters.css.map */

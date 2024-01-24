@@ -28,4 +28,26 @@ fetch("http://localhost:5678/api/works") // Je fais une requête HTTP pour récu
          
         }
     });
+
+    fetch("http://localhost:5678/api/categories") 
+    .then(response => {
+        return response.json();
+    }) .then((categories) => {
+        console.log(categories); 
+        for (const category of categories) { 
+
+            const categoryElement = document.createElement("li"); 
+            categoryElement.classList.add("category-item");
+            document.querySelector(".category").appendChild(categoryElement);
+
+            const titleElement = document.createElement("p");
+            titleElement.innerText = category.name;
+            categoryElement.appendChild(titleElement);
+
+ 
+        }
+    });
 });
+
+
+
