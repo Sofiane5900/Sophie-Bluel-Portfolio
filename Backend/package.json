@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "node-sass": "sass -w C:\\Users\\zey\\Desktop\\Portfolio-architecte-sophie-bluel\\FrontEnd\\assets\\scss:../FrontEnd/assets/dist/"
   },
   "author": "",
   "license": "ISC",
