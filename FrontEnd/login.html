@@ -3,45 +3,47 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sophie Bluel - Architecte d'intérieur</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap"
         rel="stylesheet">
+    <meta name="description" content="">
     <link rel="stylesheet" href="./assets/dist/login.css">
+    <script src="./assets/script.js"></script>
 </head>
 
 <body>
-
-
-    <header class="header__logo">
-        <h1>Sophie Bluel</h1>
-        <p>Architecte d'intérieur</p>
+    <header>
+        <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+        <nav>
+            <ul>
+                <li>projets</li>
+                <li>contact</li>
+                <li>login</li>
+                <li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+            </ul>
+        </nav>
     </header>
+    <main>
+        <section id="contact">
+            <h2>Log In</h2>
+            <p>Vous avez un projet ? Discutons-en !</p>
+            <form action="#" method="post">
+                <label for="name">E-mail:</label>
+                <input type="text" name="name" id="name">
+                <label for="email">Mot de passe:</label>
+                <input type="email" name="email" id="email">
+                <input type="submit" value="Envoyer">
+            </form>
 
-    <nav>
-        <ul>
-            <li><a href="#">projets</a></li>
-            <li><a href="#">contact</a></li>
-            <li><a href="#">login</a></li>
-        </ul>
-    </nav>
+            <div class="password__forgot">
+                <p>Mot de passe oublié</p>
+            </div>
 
-    <h1>Log In</h1>
-
-    <form>
-        <label for="email">E-mail:</label>
-        <input type="email" id="email" name="email" required>
-
-        <label for="password">Mot de passe:</label>
-        <input type="password" id="password" name="password" required>
-
-        <button type="submit">Se connecter</button>
-    </form>
-
-    <a href="#">Mot de passe oublié</a>
-
+        </section>
+    </main>
 
     <footer>
         <nav>

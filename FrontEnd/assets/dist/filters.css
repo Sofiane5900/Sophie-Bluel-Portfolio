@@ -2,7 +2,7 @@
 .category {
   display: flex;
   flex-direction: row;
-  padding: 2% 0% 5% 30%;
+  padding: 2% 0% 5% 20%;
 }
 .category .category-item {
   font-family: "Syne", sans-serif;
@@ -11,14 +11,32 @@
   list-style-type: none;
   margin: 0 5px;
   border: 2px solid #1D6154;
-  border-radius: 15px;
+  border-radius: 25px;
 }
 .category .category-item p {
   font-family: "Syne", sans-serif;
   font-size: 16px;
   line-height: 19px;
   text-align: center;
-  margin: 8px;
+  margin: 10px 30px 10px 30px;
+}
+.category .category-item-tous {
+  font-family: "Syne", sans-serif;
+  font-size: 16px;
+  color: white;
+  list-style-type: none;
+  margin: 0 10px;
+  border: 2px solid #1D6154;
+  border-radius: 25px;
+  background-color: #1D6154;
+}
+.category .category-item-tous p {
+  font-family: "Syne", sans-serif;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  margin: 10px 30px 10px 30px;
+  color: white;
 }
 
 /*# sourceMappingURL=filters.css.map */
