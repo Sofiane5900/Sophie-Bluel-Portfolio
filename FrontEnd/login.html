@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap"
         rel="stylesheet">
     <meta name="description" content="">
+    <script src="./assets/login.js"></script>
     <link rel="stylesheet" href="./assets/dist/login.css">
-    <script src="./assets/script.js"></script>
 </head>
 
 <body>
@@ -27,16 +27,19 @@
         </nav>
     </header>
     <main>
-        <section id="contact">
+        <section id="login">
             <h2>Log In</h2>
             <p>Vous avez un projet ? Discutons-en !</p>
-            <form action="#" method="post">
-                <label for="name">E-mail:</label>
-                <input type="text" name="name" id="name">
-                <label for="email">Mot de passe:</label>
+            <form id="login-form" action="#" method="post">
+                <label for="email">E-mail:</label>
                 <input type="email" name="email" id="email">
+                <label for="password">Mot de passe:</label>
+                <input type="password" name="password" id="password">
                 <input type="submit" value="Envoyer">
             </form>
+
+
+            <div class="error-message"></div>
 
             <div class="password__forgot">
                 <p>Mot de passe oublié</p>
@@ -45,13 +48,15 @@
         </section>
     </main>
 
-    <footer>
-        <nav>
-            <ul>
-                <li>Mentions Légales</li>
-            </ul>
-        </nav>
-    </footer>
+
 </body>
+
+<footer>
+    <nav>
+        <ul>
+            <li>Mentions Légales</li>
+        </ul>
+    </nav>
+</footer>
 
 </html>
