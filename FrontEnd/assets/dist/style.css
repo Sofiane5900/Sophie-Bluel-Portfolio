@@ -163,10 +163,30 @@ li:hover {
 #introduction p {
 	margin-bottom: 0.5em;
 }
+
 #portfolio h2 {
 	text-align: center;
 	margin-bottom: 1em;
 }
+
+.modify__project {
+	position: absolute;
+	z-index: 0;
+	top: 62.5%;
+	left: 57%;
+}
+
+.modify__project button {
+	border: none;
+	background: none;
+	font-family: 'Work Sans';
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 19px;
+	letter-spacing: 0em;
+	text-align: center;
+}
+
 .gallery {
 	width: 100%;
 	display: grid;

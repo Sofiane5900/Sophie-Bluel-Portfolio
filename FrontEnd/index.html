@@ -12,23 +12,27 @@
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/dist/style.css">
 	<link rel="stylesheet" href="./assets/dist/filters.css">
+	<link rel="stylesheet" href="./assets/dist/modal.css">
 	<script src="https://kit.fontawesome.com/6df5ecf35f.js" crossorigin="anonymous"></script>
 	<script src="./assets/script.js"></script>
-
 </head>
 
 <body>
+
 	<div id="edit-mode">
 		<i class="fa-regular fa-pen-to-square"></i>
 		<button id="edit-mode-button">Mode edition</button>
 	</div>
+
+
+
 	<header>
 		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 		<nav>
 			<ul>
 				<li>projets</li>
 				<li>contact</li>
-				<li>login</li>
+				<li><a href="./login.html">login</a></li>
 				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 			</ul>
 		</nav>
@@ -49,10 +53,92 @@
 					décorateur(trice)</p>
 			</article>
 		</section>
-		<section id="portfolio">
-			<h2>Mes Projets</h2>
-			<div class="category"></div>
 
+		<div class="overlay"></div>
+
+		<div class="modal">
+			<div class="modal__close">
+				<i class="fa-solid fa-xmark"></i>
+			</div>
+
+			<div class="modal__header">
+				<h2 class="modal__header--title">Galerie Photo</h2>
+			</div>
+
+
+			<div class="modal__body">
+				<div class="modal__content">
+				</div>
+
+			</div>
+
+
+			<div class="modal__footer">
+				<hr>
+
+				<button class="modal__footer--add">Ajouter une photo</button>
+			</div>
+
+		</div>
+
+		<div class="add">
+
+			<div class="add__back">
+				<i class="fa-solid fa-arrow-left"></i>
+			</div>
+
+			<div class="add__close">
+				<i class="fa-solid fa-xmark"></i>
+			</div>
+
+			<div class="add__header">
+				<h2 class="add__header--title">Ajout photo</h2>
+			</div>
+
+
+			<div class="add__body">
+				<div class="add__content">
+					<div class="add__content--picture">
+						<img class="picture" src="./assets/images/image-regular.svg" alt="">
+						<label for="file">+ Ajouter photo</label>
+						<input type="file" id="file" name="file" accept="image/png, image/jpeg">
+						<p>jpg, png : 4mo max</p>
+					</div>
+
+					<div class="add__content--text">
+						<form class="add__content--form" action="#" method="post">
+							<label for="title">Titre</label>
+							<input type="text" name="text" id="text">
+							<label for="category">Catégorie</label>
+							<input type="category" name="category" id="category">
+						</form>
+					</div>
+
+					<div class="add__content--category"></div>
+				</div>
+
+			</div>
+
+			<hr class="add__content--hr">
+
+			<div class="add__footer">
+				<button class="add__footer--confirm">Valider</button>
+			</div>
+
+		</div>
+
+
+
+		<section id="portfolio">
+			<div class="project">
+				<div class="modify__project">
+					<i class="fa-solid fa-pen-to-square"></i>
+					<button id="modify__project--button">modifier</button>
+				</div>
+				<h2>Mes Projets</h2>
+			</div>
+
+			<div class="category"></div>
 			<div class="gallery"></div>
 		</section>
 		<section id="contact">
