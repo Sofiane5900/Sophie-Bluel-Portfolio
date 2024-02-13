@@ -1,10 +1,15 @@
+ // TODO: Réorganiser le code en plusieurs fichier pour une meilleur lisibilité
+
 document.addEventListener("DOMContentLoaded", (event) => {
     // Récupération des éléments du DOM
     const galleryElement = document.querySelector(".gallery");
     const categoryElement = document.querySelector(".category");
     let work = []; // Tableau pour stocker les travaux
     
-    const editMode = document.querySelector("#edit-mode");
+
+
+    const editMode = document.querySelector("#edit__mode");
+    const modifyButton = document.querySelector("#modify__project--button");
     const modal = document.querySelector(".modal");
     const close = document.querySelector(".modal__close");
     const modalContent = document.querySelector(".modal__content");
@@ -19,13 +24,19 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const goBackModal = document.querySelector(".add__back");
     const addPicture = document.querySelector(".add__content--picture");
     const picture = document.querySelector(".picture");
+    const titleInput = document.querySelector(".add__content--description");
+    const categoryInput = document.querySelector("#category");
+    const confirmButton = document.querySelector(".add__footer--confirm");
+    const loginMessage = document.querySelector(".login__message");
+
+    
 
     // Déclarer une variable loggedUser pour stocker les données de l'utilisateur connecté
     let loggedUser = null;
     
         // Si j'ai un token dans le localStorage, je récupère les données de l'utilisateur connecté
         if (localStorage.getItem("token")) {
-            let edition = document.querySelector("#edit-mode");
+            let edition = document.querySelector("#edit__mode");
             edition.style.display = "block"; 
         } 
 
@@ -141,6 +152,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
             console.log(workArray);
 
             // ** Modal ** //
+            add.style.display = "none";
+            modal.style.display = "none";
+
 
    
             // "modal" should never be opened if the user is not logged in
@@ -159,10 +173,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 modal.style.display = "none";
             }
 
-            editMode.addEventListener("click", () => {
+            modifyButton.addEventListener("click", () => {
                 openModal();
             });
-        
+           
             close.addEventListener("click", (event) => {
                 closeModal();
             });    
@@ -182,7 +196,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 // Je crée une div modal__body--icon pour mes icones qui ce trouve dans ma modal__content 
                 const modalBody = document.createElement("div");
                 modalBody.classList.add("modal__body--icon");
-                modalItem.appendChild(modalBody);
+                modalItem.appendChild(modalBody); 
 
                 // J'ajoute une icone de suppresion dans ma div modal__body--icon
                 const deleteIcon = document.createElement("i");
@@ -219,6 +233,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 function goBack() {
                     add.style.display = "none";
                 }
+
+            
         
 
             openAddModal.addEventListener("click", () => {
@@ -251,15 +267,60 @@ document.addEventListener("DOMContentLoaded", (event) => {
                         }
                     };
                 });
-                
-      
-                
-                
-            
-             
-       
 
-                
+                // Si toute les label sont remplis alors le bouton "add__footer--confirm" prend une couleur verte
+        
+            
+                // Fonction pour vérifier si tous les champs sont remplis
+                function checkFields() {
+                    const titleValue = titleInput.value.trim();
+                    const categoryValue = categoryInput.value.trim();
+            
+                    if (titleValue !== "" && categoryValue !== "") {
+                        confirmButton.style.backgroundColor = "#1D6154"; // Couleur verte
+                        loginMessage.innerText = ""; // Effacer le message
+                    } else {
+                        confirmButton.style.backgroundColor = "grey"; // Couleur par défaut
+                        const message = "Veuillez remplir tous les champs";
+                        loginMessage.innerText = message;
+                    }
+                }
+
+                // Ajouter des écouteurs d'événements pour les changements dans les champs du formulaire
+                titleInput.addEventListener("input", checkFields);
+                categoryInput.addEventListener("input", checkFields);
+
+            
+
+                // J'utilise FormData pour envoyer mes données de mes champs dans ma base de donnée et les afficher avec la photo 
+                confirmButton.addEventListener("click", async () => {
+                    const formData = new FormData();
+                    formData.append("title", titleInput.value);
+                    formData.append("category", categoryInput.value);
+                    formData.append("imageUrl", addPicture.files);
+                    const response = await fetch("http://localhost:5678/api/works", {
+                        method: "POST",
+                        body: formData,
+                        headers: {
+                            "Authorization": `Bearer ${localStorage.getItem("token")}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const work = await response.json();
+                        console.log(work);
+                        const galleryItem = document.createElement("figure");
+                        galleryItem.classList.add("gallery-item");
+                        const imageElement = document.createElement("img");
+                        imageElement.src = work.imageUrl;
+                        galleryItem.appendChild(imageElement);
+                        const titleElement = document.createElement("figcaption");
+                        titleElement.innerText = work.title;
+                        galleryItem.appendChild(titleElement);
+                        galleryElement.appendChild(galleryItem);
+                        closeAddModal();
+                    }
+                });
             }
   
         });

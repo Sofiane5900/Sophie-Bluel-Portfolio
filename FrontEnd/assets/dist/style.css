@@ -88,7 +88,7 @@ h2{
 	color: #1D6154
 }
 
-#edit-mode {
+#edit__mode {
 	position: relative;
 	width: 100vw;
 	height: 59px;
@@ -102,7 +102,8 @@ h2{
     text-align: center;
 }
 
-#edit-mode-button {
+
+.edit__mode--button{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -116,6 +117,14 @@ h2{
     letter-spacing: 0em;
     text-align: center;
     color: white;
+}
+
+.edit__mode--icon {
+	position: absolute;
+	top: 50%;
+	left: 46.5%;
+	transform: translate(-50%, -50%);
+	color: white;
 }
 
 .fa-regular {
@@ -164,16 +173,20 @@ li:hover {
 	margin-bottom: 0.5em;
 }
 
+#portfolio {
+	position: relative;
+}
+
 #portfolio h2 {
 	text-align: center;
 	margin-bottom: 1em;
 }
 
 .modify__project {
-	position: absolute;
-	z-index: 0;
-	top: 62.5%;
-	left: 57%;
+    position: absolute;
+    z-index: 0;
+	top: 0.2%;
+    left: 62%;
 }
 
 .modify__project button {

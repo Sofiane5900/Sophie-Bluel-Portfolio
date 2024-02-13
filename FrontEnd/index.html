@@ -19,11 +19,11 @@
 
 <body>
 
-	<div id="edit-mode">
-		<i class="fa-regular fa-pen-to-square"></i>
-		<button id="edit-mode-button">Mode edition</button>
-	</div>
 
+	<div id="edit__mode">
+		<i class="fa-regular fa-pen-to-square"></i>
+		<button class="edit__mode--button">Mode edition</button>
+	</div>
 
 
 	<header>
@@ -56,76 +56,80 @@
 
 		<div class="overlay"></div>
 
-		<div class="modal">
-			<div class="modal__close">
-				<i class="fa-solid fa-xmark"></i>
-			</div>
+		<section id="modal__section">
+			<div class="modal">
+				<div class="modal__close">
+					<i class="fa-solid fa-xmark"></i>
+				</div>
 
-			<div class="modal__header">
-				<h2 class="modal__header--title">Galerie Photo</h2>
-			</div>
+				<div class="modal__header">
+					<h2 class="modal__header--title">Galerie Photo</h2>
+				</div>
 
 
-			<div class="modal__body">
-				<div class="modal__content">
+				<div class="modal__body">
+					<div class="modal__content">
+					</div>
+
+				</div>
+
+
+				<div class="modal__footer">
+					<hr>
+
+					<button class="modal__footer--add">Ajouter une photo</button>
+				</div>
+
+				<div class="add">
+
+					<div class="add__back">
+						<i class="fa-solid fa-arrow-left"></i>
+					</div>
+
+					<div class="add__close">
+						<i class="fa-solid fa-xmark"></i>
+					</div>
+
+					<div class="add__header">
+						<h2 class="add__header--title">Ajout photo</h2>
+					</div>
+
+
+					<div class="add__body">
+						<div class="add__content">
+							<div class="add__content--picture">
+								<img class="picture" src="./assets/images/image-regular.svg" alt="">
+								<label for="file">+ Ajouter photo</label>
+								<input type="file" id="file" name="file" accept="image/png, image/jpeg">
+								<p>jpg, png : 4mo max</p>
+							</div>
+
+							<div class="add__content--text">
+								<form class="add__content--form" action="#" method="post">
+									<label class="add__content--title" for="title">Titre</label>
+									<input class="add__content--description" type="text" name="text" id="text">
+									<label for="category">Catégorie</label>
+									<input type="category" name="category" id="category">
+								</form>
+								<div class="login__message"></div>
+							</div>
+
+							<div class="add__content--category"></div>
+						</div>
+
+					</div>
+
+					<hr class="add__content--hr">
+
+					<div class="add__footer">
+						<button class="add__footer--confirm">Valider</button>
+					</div>
+
 				</div>
 
 			</div>
+		</section>
 
-
-			<div class="modal__footer">
-				<hr>
-
-				<button class="modal__footer--add">Ajouter une photo</button>
-			</div>
-
-		</div>
-
-		<div class="add">
-
-			<div class="add__back">
-				<i class="fa-solid fa-arrow-left"></i>
-			</div>
-
-			<div class="add__close">
-				<i class="fa-solid fa-xmark"></i>
-			</div>
-
-			<div class="add__header">
-				<h2 class="add__header--title">Ajout photo</h2>
-			</div>
-
-
-			<div class="add__body">
-				<div class="add__content">
-					<div class="add__content--picture">
-						<img class="picture" src="./assets/images/image-regular.svg" alt="">
-						<label for="file">+ Ajouter photo</label>
-						<input type="file" id="file" name="file" accept="image/png, image/jpeg">
-						<p>jpg, png : 4mo max</p>
-					</div>
-
-					<div class="add__content--text">
-						<form class="add__content--form" action="#" method="post">
-							<label for="title">Titre</label>
-							<input type="text" name="text" id="text">
-							<label for="category">Catégorie</label>
-							<input type="category" name="category" id="category">
-						</form>
-					</div>
-
-					<div class="add__content--category"></div>
-				</div>
-
-			</div>
-
-			<hr class="add__content--hr">
-
-			<div class="add__footer">
-				<button class="add__footer--confirm">Valider</button>
-			</div>
-
-		</div>
 
 
 
