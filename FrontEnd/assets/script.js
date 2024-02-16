@@ -1,330 +1,345 @@
- // TODO: Réorganiser le code en plusieurs fichier pour une meilleur lisibilité
+document.addEventListener("DOMContentLoaded", () => {
+  // DOM elements
+  const galleryElement = document.querySelector(".gallery");
+  const categoryElement = document.querySelector(".category");
+  const editMode = document.querySelector("#edit__mode");
+  const modifyButton = document.querySelector("#modify__project--button");
+  const modal = document.querySelector(".modal");
+  const close = document.querySelector(".modal__close");
+  const modalContent = document.querySelector(".modal__content");
+  const overlay = document.querySelector(".overlay");
+  const modalIcon = document.querySelector(".modal__body--icon");
+  const modifyProject = document.querySelector(".modify__project");
+  const openAddModal = document.querySelector(".modal__footer--add");
+  const add = document.querySelector(".add");
+  const addBack = document.querySelector(".add__back");
+  const closeAdd = document.querySelector(".add__close");
+  const goBackModal = document.querySelector(".add__back");
+  const addPicture = document.querySelector(".add__content--picture");
+  const picture = document.querySelector(".picture");
+  const titleInput = document.querySelector(".add__content--description");
+  const categoryInput = document.querySelector("#category");
+  const confirmButton = document.querySelector(".add__footer--confirm");
+  const loginMessage = document.querySelector(".login__message");
 
-document.addEventListener("DOMContentLoaded", (event) => {
-    // Récupération des éléments du DOM
-    const galleryElement = document.querySelector(".gallery");
-    const categoryElement = document.querySelector(".category");
-    let work = []; // Tableau pour stocker les travaux
-    
+  // Variables
+  let work = [];
+  let loggedUser = null;
 
+  // Check if user is logged in and display edit mode
+  if (localStorage.getItem("token")) {
+    editMode.style.display = "block";
+  }
 
-    const editMode = document.querySelector("#edit__mode");
-    const modifyButton = document.querySelector("#modify__project--button");
-    const modal = document.querySelector(".modal");
-    const close = document.querySelector(".modal__close");
-    const modalContent = document.querySelector(".modal__content");
-    const overlay = document.querySelector(".overlay");
-    const modalIcon = document.querySelector(".modal__body--icon");
-    const modifyProject = document.querySelector(".modify__project");
-    const openAddModal = document.querySelector(".modal__footer--add");
+  // Fetch works from API
+  fetchWorks();
 
-    const add = document.querySelector(".add");
-    const addBack = document.querySelector(".add__back");
-    const closeAdd = document.querySelector(".add__close");
-    const goBackModal = document.querySelector(".add__back");
-    const addPicture = document.querySelector(".add__content--picture");
-    const picture = document.querySelector(".picture");
-    const titleInput = document.querySelector(".add__content--description");
-    const categoryInput = document.querySelector("#category");
-    const confirmButton = document.querySelector(".add__footer--confirm");
-    const loginMessage = document.querySelector(".login__message");
+  // Fetch works function
+  function fetchWorks() {
+    fetch("http://localhost:5678/api/works")
+      .then((response) => response.json())
+      .then((works) => {
+        work = works;
+        initializeGallery(works);
+        createCategories(works);
+        setupEditModeDisplay();
+        setupModifyProjectDisplay();
+        setupModal();
+        setupAddModal();
+      });
+  }
 
-    
+  // Initialize gallery with all works
+  function initializeGallery(works) {
+    galleryElement.innerHTML = "";
+    works.forEach((work) => {
+      createGalleryItem(work);
+    });
+  }
 
-    // Déclarer une variable loggedUser pour stocker les données de l'utilisateur connecté
-    let loggedUser = null;
-    
-        // Si j'ai un token dans le localStorage, je récupère les données de l'utilisateur connecté
-        if (localStorage.getItem("token")) {
-            let edition = document.querySelector("#edit__mode");
-            edition.style.display = "block"; 
-        } 
+  // Create gallery item
+  function createGalleryItem(work) {
+    const galleryItem = document.createElement("figure");
+    galleryItem.classList.add("gallery-item");
 
-    // ** Filtre et affichage des travaux ** //
-    fetch("http://localhost:5678/api/works") 
-        .then(response => response.json())
-        .then((works) => {
-            console.log(works);
-            work = works;
-            let workArray = new Set(); // Utilisation de Set pour éviter les doublons de catégories
+    const imageElement = document.createElement("img");
+    imageElement.src = work.imageUrl;
+    galleryItem.appendChild(imageElement);
 
-            // Création de la catégorie "Tous" dans le menu
-            const tousCategory = document.createElement("li"); 
-            tousCategory.classList.add("category-item-tous");
-            categoryElement.appendChild(tousCategory); 
-       
-            const tousElement = document.createElement("p"); 
-            tousElement.innerText = "Tous"; 
-            tousCategory.appendChild(tousElement);
-       
-            tousElement.addEventListener("click", () => { 
-                // Effacer la galerie
-                galleryElement.innerHTML = ''; 
-       
-                // Afficher tous les travaux dans la galerie
-                works.forEach(work => {
-                    const galleryItem = document.createElement("figure");
-                    galleryItem.classList.add("gallery-item");
-                   
-                    const imageElement = document.createElement("img");
-                    imageElement.src = work.imageUrl;
-                    galleryItem.appendChild(imageElement);
-                   
-                    const titleElement = document.createElement("figcaption");
-                    titleElement.innerText = work.title;
-                    galleryItem.appendChild(titleElement);
-                   
-                    galleryElement.appendChild(galleryItem);
-                });
-            });
+    const titleElement = document.createElement("figcaption");
+    titleElement.innerText = work.title;
+    galleryItem.appendChild(titleElement);
 
-            // Ajout des éléments à la galerie
-            for (const work of works) {
-                const galleryItem = document.createElement("figure");
-                galleryItem.classList.add("gallery-item");
+    galleryElement.appendChild(galleryItem);
+  }
 
-                const imageElement = document.createElement("img");
-                imageElement.src = work.imageUrl;
-                galleryItem.appendChild(imageElement);
+  // Create categories in the menu
+  function createCategories(works) {
+    const workArray = new Set();
 
-                const titleElement = document.createElement("figcaption");
-                titleElement.innerText = work.title;
-                galleryItem.appendChild(titleElement);
+    const tousCategory = document.createElement("li");
+    tousCategory.classList.add("category-item-tous");
+    categoryElement.appendChild(tousCategory);
 
-                workArray.add(work.category.name);
+    const tousElement = document.createElement("p");
+    tousElement.innerText = "Tous";
+    tousCategory.appendChild(tousElement);
 
-                // Ajout directement à la galerie
-                galleryElement.appendChild(galleryItem);
-            }
+    tousElement.addEventListener("click", () => {
+      displayAllWorks(works);
+    });
 
-            // Ajout des catégories à la liste
-            workArray.forEach(categoryName => {
-                const categoryArray = document.createElement("li");
-                categoryArray.classList.add("category-item");
-                categoryElement.appendChild(categoryArray);
+    works.forEach((work) => {
+      workArray.add(work.category.name);
+    });
 
-                const nameElement = document.createElement("p");
-                nameElement.innerText = categoryName;
-                categoryArray.appendChild(nameElement);
+    workArray.forEach((categoryName) => {
+      createCategoryElement(categoryName, works);
+    });
+  }
 
-                nameElement.addEventListener("click", () => {
-                    // Effacer la galerie
-                    galleryElement.innerHTML = '';
+  // Create category element
+  function createCategoryElement(categoryName, works) {
+    const categoryArray = document.createElement("li");
+    categoryArray.classList.add("category-item");
+    categoryElement.appendChild(categoryArray);
 
-                    // Filtrer les travaux en fonction de la catégorie
-                    const filteredWorks = categoryName === "Tous" 
-                        ? works // Je veux tous les travaux
-                        : works.filter(work => work.category.name === categoryName); 
+    const nameElement = document.createElement("p");
+    nameElement.innerText = categoryName;
+    categoryArray.appendChild(nameElement);
 
-                    // Afficher les travaux filtrés dans la galerie
-                    filteredWorks.forEach(work => {
-                        const galleryItem = document.createElement("figure"); 
-                        galleryItem.classList.add("gallery-item");
+    nameElement.addEventListener("click", () => {
+      displayFilteredWorks(categoryName, works);
+    });
 
-                        const imageElement = document.createElement("img");
-                        imageElement.src = work.imageUrl;
-                        galleryItem.appendChild(imageElement);
+    // Display filters conditionally based on login status
+    displayFiltersBasedOnLoginStatus();
 
-                        const titleElement = document.createElement("figcaption");
-                        titleElement.innerText = work.title;
-                        galleryItem.appendChild(titleElement);
+    // Display modify__project based on login status
+    displayModifyProjectBasedOnLoginStatus();
+  }
 
-                        galleryElement.appendChild(galleryItem);
-                    });
-                });
+  // Display all works in the gallery
+  function displayAllWorks(works) {
+    galleryElement.innerHTML = "";
+    works.forEach((work) => {
+      createGalleryItem(work);
+    });
+  }
 
-                
-                
-                       // Quand je suis login alors je ne vois plus les filtres 
-                       if (localStorage.getItem("token")) {
-                        categoryElement.style.display = "none";
-                    }
+  // Display filtered works in the gallery
+  function displayFilteredWorks(categoryName, works) {
+    galleryElement.innerHTML = "";
+    const filteredWorks =
+      categoryName === "Tous"
+        ? works
+        : works.filter((work) => work.category.name === categoryName);
 
-                    // Quand je suis login je vois "modify__project"
-                    if (localStorage.getItem("token")) {
-                        modifyProject.style.display = "block";
-                    } // Sinons je ne le vois pas
-                    else {
-                        modifyProject.style.display = "none";
-                    }
+    filteredWorks.forEach((work) => {
+      createGalleryItem(work);
+    });
+  }
 
-            });
-            console.log(workArray);
+  // Display filters conditionally based on login status
+  function displayFiltersBasedOnLoginStatus() {
+    if (localStorage.getItem("token")) {
+      categoryElement.style.display = "none";
+    }
+  }
 
-            // ** Modal ** //
-            add.style.display = "none";
-            modal.style.display = "none";
+  // Display modify__project based on login status
+  function displayModifyProjectBasedOnLoginStatus() {
+    modifyProject.style.display = localStorage.getItem("token")
+      ? "block"
+      : "none";
+  }
 
+  // Setup edit mode display
+  function setupEditModeDisplay() {
+    if (localStorage.getItem("token")) {
+      categoryElement.style.display = "none";
+    }
+  }
 
-   
-            // "modal" should never be opened if the user is not logged in
-            if (!localStorage.getItem("token")) {
-                modal.style.display = "none";
-            }
+  // Setup modify__project display
+  function setupModifyProjectDisplay() {
+    modifyProject.style.display = localStorage.getItem("token")
+      ? "block"
+      : "none";
+  }
 
+  // Setup modal
+  function setupModal() {
+    modal.style.display = localStorage.getItem("token") ? "none" : "none";
 
-            function openModal() {
-                overlay.style.display = "block";
-                modal.style.display = "block";
-            }
+    modifyButton.addEventListener("click", () => {
+      openModal();
+    });
 
-            function closeModal() {
-                overlay.style.display = "none";
-                modal.style.display = "none";
-            }
+    close.addEventListener("click", () => {
+      closeModal();
+    });
 
-            modifyButton.addEventListener("click", () => {
-                openModal();
-            });
-           
-            close.addEventListener("click", (event) => {
-                closeModal();
-            });    
-    
-            for (const work of works) {
-                // J'affiche tout mes travaux dans ma modal 
-                const modalItem = document.createElement("figure");
-                // J'ajoute cette element dans ma modal__content
-                modalItem.classList.add("modal__item");
-                modalContent.appendChild(modalItem);
+    work.forEach((work) => {
+      createModalItem(work);
+    });
+  }
 
-                const modalImage = document.createElement("img");
-                modalImage.src = work.imageUrl;
-                modalItem.appendChild(modalImage);
+  // Open modal function
+  function openModal() {
+    overlay.style.display = "block";
+    modal.style.display = "block";
+  }
 
-          
-                // Je crée une div modal__body--icon pour mes icones qui ce trouve dans ma modal__content 
-                const modalBody = document.createElement("div");
-                modalBody.classList.add("modal__body--icon");
-                modalItem.appendChild(modalBody); 
+  // Close modal function
+  function closeModal() {
+    overlay.style.display = "none";
+    modal.style.display = "none";
+  }
 
-                // J'ajoute une icone de suppresion dans ma div modal__body--icon
-                const deleteIcon = document.createElement("i");
-                deleteIcon.classList.add("fas", "fa-trash-alt");
-                modalBody.appendChild(deleteIcon);
-      
-                
-                // Quand je clique sur l'icone de suppresion, je supprime le travail
-                deleteIcon.addEventListener("click", async () => {
-                    // Supprimer le travail
-                    const response = await fetch(`http://localhost:5678/api/works/${work.id}`, {
-                        method: "DELETE",
-                        headers: {
-                            "Authorization": `Bearer ${localStorage.getItem("token")}`
-                        }
-                    });
-                    if (response.ok) {
-                        modalContent.removeChild(modalItem);
-                    }
-                });
+  // Create modal item
+  function createModalItem(work) {
+    const modalItem = document.createElement("figure");
+    modalItem.classList.add("modal__item");
+    modalContent.appendChild(modalItem);
 
-                // Quand je clique sur "add__close", je ferme la modal 
-                function closeAddModal() {
-                    add.style.display = "none";
-                    modal.style.display = "none";
-                    overlay.style.display = "none";
-                }
+    const modalImage = document.createElement("img");
+    modalImage.src = work.imageUrl;
+    modalItem.appendChild(modalImage);
 
-                function openAdd() {
-                    overlay.style.display = "block";
-                    add.style.display = "block";
-                }
+    const modalBody = document.createElement("div");
+    modalBody.classList.add("modal__body--icon");
+    modalItem.appendChild(modalBody);
 
-                function goBack() {
-                    add.style.display = "none";
-                }
+    const deleteIcon = document.createElement("i");
+    deleteIcon.classList.add("fas", "fa-trash-alt");
+    modalBody.appendChild(deleteIcon);
 
-            
-        
+    deleteIcon.addEventListener("click", async () => {
+      const response = await fetch(
+        `http://localhost:5678/api/works/${work.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
-            openAddModal.addEventListener("click", () => {
-                openAdd();
-            });
+      if (response.ok) {
+        modalContent.removeChild(modalItem);
+      }
+    });
+  }
 
+  // Setup add modal
+  function setupAddModal() {
+    add.style.display = "none";
+    modal.style.display = "none";
 
-                closeAdd.addEventListener("click", (event) => {
-                    closeAddModal();
-                });
+    if (!localStorage.getItem("token")) {
+      modal.style.display = "none";
+    }
 
-                goBackModal.addEventListener("click", (event) => {
-                    goBack();
-                });
+    openAddModal.addEventListener("click", () => {
+      openAdd();
+    });
 
+    closeAdd.addEventListener("click", () => {
+      closeAddModal();
+    });
 
-                /// Si j'ajoute une photo sur le label "file", alors ma photo va prendre la place de toute la div "add__content--picture"
-                addPicture.addEventListener("change", (event) => {
-                    const file = event.target.files[0];
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                
-                    reader.onload = () => {
-                        // Mettez à jour la source de l'image dans l'élément avec la classe "picture"
-                        picture.src = reader.result;
-                        // Mettez à jour le contenu de la div avec la classe "add__content--picture"
-                        const addContentPicture = document.querySelector('.add__content--picture');
-                        if (addContentPicture) {
-                            addContentPicture.innerHTML = `<img class="picture" src="${reader.result}" alt="Uploaded Picture">`;
-                        }
-                    };
-                });
+    goBackModal.addEventListener("click", () => {
+      goBack();
+    });
 
-                // Si toute les label sont remplis alors le bouton "add__footer--confirm" prend une couleur verte
-        
-            
-                // Fonction pour vérifier si tous les champs sont remplis
-                function checkFields() {
-                    const titleValue = titleInput.value.trim();
-                    const categoryValue = categoryInput.value.trim();
-            
-                    if (titleValue !== "" && categoryValue !== "") {
-                        confirmButton.style.backgroundColor = "#1D6154"; // Couleur verte
-                        loginMessage.innerText = ""; // Effacer le message
-                    } else {
-                        confirmButton.style.backgroundColor = "grey"; // Couleur par défaut
-                        const message = "Veuillez remplir tous les champs";
-                        loginMessage.innerText = message;
-                    }
-                }
+    addPicture.addEventListener("change", (event) => {
+      handlePictureChange(event);
+    });
 
-                // Ajouter des écouteurs d'événements pour les changements dans les champs du formulaire
-                titleInput.addEventListener("input", checkFields);
-                categoryInput.addEventListener("input", checkFields);
+    titleInput.addEventListener("input", checkFields);
+    categoryInput.addEventListener("input", checkFields);
 
-            
+    confirmButton.addEventListener("click", () => {
+      handleConfirmButtonClick();
+    });
+  }
 
-                // J'utilise FormData pour envoyer mes données de mes champs dans ma base de donnée et les afficher avec la photo 
-                confirmButton.addEventListener("click", async () => {
-                    const formData = new FormData();
-                    formData.append("title", titleInput.value);
-                    formData.append("category", categoryInput.value);
-                    formData.append("imageUrl", addPicture.files);
-                    const response = await fetch("http://localhost:5678/api/works", {
-                        method: "POST",
-                        body: formData,
-                        headers: {
-                            "Authorization": `Bearer ${localStorage.getItem("token")}`
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const work = await response.json();
-                        console.log(work);
-                        const galleryItem = document.createElement("figure");
-                        galleryItem.classList.add("gallery-item");
-                        const imageElement = document.createElement("img");
-                        imageElement.src = work.imageUrl;
-                        galleryItem.appendChild(imageElement);
-                        const titleElement = document.createElement("figcaption");
-                        titleElement.innerText = work.title;
-                        galleryItem.appendChild(titleElement);
-                        galleryElement.appendChild(galleryItem);
-                        closeAddModal();
-                    }
-                });
-            }
-  
-        });
+  // Open add modal function
+  function openAdd() {
+    overlay.style.display = "block";
+    add.style.display = "block";
+  }
 
+  // Close add modal function
+  function closeAddModal() {
+    add.style.display = "none";
+    modal.style.display = "none";
+    overlay.style.display = "none";
+  }
 
+  // Go back function
+  function goBack() {
+    add.style.display = "none";
+  }
 
+  // Handle picture change function
+  function handlePictureChange(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+      picture.src = reader.result;
+      const addContentPicture = document.querySelector(
+        ".add__content--picture"
+      );
+      if (addContentPicture) {
+        addContentPicture.innerHTML = `<img class="picture" src="${reader.result}" alt="Uploaded Picture">`;
+      }
+    };
+  }
+
+  // Check if all fields are filled
+  function checkFields() {
+    const titleValue = titleInput.value.trim();
+    const categoryValue = categoryInput.value.trim();
+
+    if (titleValue !== "" && categoryValue !== "") {
+      confirmButton.style.backgroundColor = "#1D6154";
+      loginMessage.innerText = "";
+    } else {
+      confirmButton.style.backgroundColor = "grey";
+      loginMessage.innerText = "Veuillez remplir tous les champs";
+    }
+  }
+
+  // Handle confirm button click
+  async function handleConfirmButtonClick() {
+    const formData = new FormData();
+    formData.append("title", titleInput.value);
+    formData.append("category", categoryInput.value);
+
+    if (addPicture.files && addPicture.files.length > 0) {
+      formData.append("imageUrl", addPicture.files[0]);
+    }
+
+    const response = await fetch("http://localhost:5678/api/works", {
+      method: "POST",
+      body: formData,
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (response.ok) {
+      const newWork = await response.json();
+      createGalleryItem(newWork);
+      closeAddModal();
+    } else {
+      const errorResponse = await response.json();
+      console.error("Error:", errorResponse);
+    }
+  }
 });
