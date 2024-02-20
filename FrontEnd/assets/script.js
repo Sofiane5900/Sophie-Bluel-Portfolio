@@ -17,8 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const goBackModal = document.querySelector(".add__back");
   const addPicture = document.querySelector(".add__content--picture");
   const picture = document.querySelector(".picture");
-  const titleInput = document.querySelector(".add__content--description");
-  const categoryInput = document.querySelector("#category");
+  const addPicture2 = document.querySelector("#file");
+  const titleInput = document.querySelector(".add__content--category");
+  const categorySelect = document.querySelector("#category");
   const confirmButton = document.querySelector(".add__footer--confirm");
   const loginMessage = document.querySelector(".login__message");
 
@@ -31,8 +32,9 @@ document.addEventListener("DOMContentLoaded", () => {
     editMode.style.display = "block";
   }
 
-  // Fetch works from API
+  // Fetch works from API and populate categories
   fetchWorks();
+  fetchAndPopulateCategories();
 
   // Fetch works function
   function fetchWorks() {
@@ -46,6 +48,28 @@ document.addEventListener("DOMContentLoaded", () => {
         setupModifyProjectDisplay();
         setupModal();
         setupAddModal();
+      });
+  }
+
+  // Function to fetch and populate categories
+  function fetchAndPopulateCategories() {
+    // Fetch categories from API
+    fetch("http://localhost:5678/api/categories")
+      .then((response) => response.json())
+      .then((categories) => {
+        // Update the options in the select element
+        const categorySelect = document.querySelector("#category");
+        categorySelect.innerHTML = ""; // Clear existing options
+
+        categories.forEach((category) => {
+          const option = document.createElement("option");
+          option.value = category.id;
+          option.textContent = category.name;
+          categorySelect.appendChild(option);
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
       });
   }
 
@@ -258,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     titleInput.addEventListener("input", checkFields);
-    categoryInput.addEventListener("input", checkFields);
+    categorySelect.addEventListener("change", checkFields);
 
     confirmButton.addEventListener("click", () => {
       handleConfirmButtonClick();
@@ -295,7 +319,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ".add__content--picture"
       );
       if (addContentPicture) {
-        addContentPicture.innerHTML = `<img class="picture" src="${reader.result}" alt="Uploaded Picture">`;
+        addContentPicture.innerHTML = `<img class="picture" src="${reader.result}" alt="Uploaded Picture" style="width: 129px; height: 170px; filter: none;">`;
       }
     };
   }
@@ -303,7 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Check if all fields are filled
   function checkFields() {
     const titleValue = titleInput.value.trim();
-    const categoryValue = categoryInput.value.trim();
+    const categoryValue = categorySelect.value.trim();
 
     if (titleValue !== "" && categoryValue !== "") {
       confirmButton.style.backgroundColor = "#1D6154";
@@ -318,28 +342,29 @@ document.addEventListener("DOMContentLoaded", () => {
   async function handleConfirmButtonClick() {
     const formData = new FormData();
     formData.append("title", titleInput.value);
-    formData.append("category", categoryInput.value);
+    formData.append("category", categorySelect.value);
+    formData.append("image", addPicture2.files[0]);
 
-    if (addPicture.files && addPicture.files.length > 0) {
-      formData.append("imageUrl", addPicture.files[0]);
-    }
+    try {
+      const response = await fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        body: formData,
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-    const response = await fetch("http://localhost:5678/api/works", {
-      method: "POST",
-      body: formData,
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-
-    if (response.ok) {
-      const newWork = await response.json();
-      createGalleryItem(newWork);
-      closeAddModal();
-    } else {
-      const errorResponse = await response.json();
-      console.error("Error:", errorResponse);
+      if (response.ok) {
+        const newWork = await response.json();
+        createGalleryItem(newWork);
+        closeAddModal();
+      } else {
+        const errorResponse = await response.text();
+        console.error("Error:", errorResponse);
+      }
+    } catch (error) {
+      console.error("Error:", error);
     }
   }
 });

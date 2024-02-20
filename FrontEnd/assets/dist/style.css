@@ -146,6 +146,16 @@ nav li {
 	font-size: 1.2em;
 }
 
+.li a {
+	text-decoration: none;
+	color: #1D6154;
+}
+
+.nav__li--a {
+	text-decoration: none;
+	color: black;
+}
+
 li:hover {
 	color: #B1663C;
 }
@@ -209,9 +219,11 @@ li:hover {
 }
 
 .gallery img {
-	width: 100%;
-
+	width: 366px;
+	height: 489px;
 }
+
+
 #contact {
 	width: 50%;
 	margin: auto;
